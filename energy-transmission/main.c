@@ -1,46 +1,41 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
 
 int e, l, label[101], test_num = 1;
 
-void reach(int g[][e], int from) {
+int reach(int g[][e], int from, int to) {
   int v;
 
+  if (from == to)
+    return true;
   label[from] = 1;
   for (v=0; v<e; v++)
     if ((g[from][v] == 1 || g[v][from] == 1) && label[v] == 0)
-      reach(g, v);
+      if (reach(g, v, to))
+        return 1;
+  return 0;
 }
 
-_Bool match_path(int g[][e], int from, int to) {
+int match_path(int g[][e], int from, int to) {
   int v;
 
   for (v=0; v<e; v++)
     label[v] = 0;
-  reach(g, from);
-
-  if (label[to] == 0)
-    return false;
-  return true;
+  return reach(g, from, to);
 }
 
-_Bool transmission_state(int g[][e]) {
-  int i, j;
+int build_graph() {
+  int i, j, x, y;
+  bool result;
 
-  for (i=0; i<e; i++) {
-    for (j=0; j<e; j++) {
-      if (!match_path(g, i, j))
-        return false;
-    }
-  }
+  scanf("%d %d\n", &e, &l);
+  if (((e == 0)&&(l == 0)) ||
+      ((e < 3)||(e > 100)) ||
+      ((l < e-1)||(l > e*(e-1)/2)))
+    return 0;
 
-  return true;
-}
-
-_Bool build_graph() {
-  int i, j, x, y, graph[e][e];
+  int graph[e][e];
 
   memset(graph, 0, sizeof(graph[0][0]) * e * e);
   // reading the input
@@ -49,23 +44,24 @@ _Bool build_graph() {
     graph[x-1][y-1] = 1;
   }
 
-  if (!transmission_state(graph))
-    return false;
-  return true;
+  for (i=0; i<e; i++) {
+    for (j=0; j<e; j++) {
+      if (!match_path(graph, i, j))
+        result = false;
+    }
+  }
+
+  if (result)
+    printf("Teste %d\nnormal\n\n", test_num);
+  else
+    printf("Teste %d\nfalha\n\n", test_num);
+
+  test_num++;
+  build_graph();
 }
 
 int main() {
-  while (true) {
-    scanf("%d %d\n", &e, &l);
-    if (((e == 0)&&(l == 0)) ||
-       ((e < 3)||(e > 100)) ||
-       ((l < e-1)||(l > e*(e-1)/2)))
-      exit(1);
+  build_graph();
 
-    if (build_graph())
-      printf("Teste %d\nnormal\n\n", test_num);
-    else
-      printf("Teste %d\nfalha\n\n", test_num);
-    test_num++;
-  }
+  return 0;
 }
