@@ -5,23 +5,23 @@
 int e, l, label[101], test_num = 1;
 
 int reach(int g[][e], int from, int to) {
-  int v;
+  int node;
 
   if (from == to)
     return true;
   label[from] = 1;
-  for (v=0; v<e; v++)
-    if ((g[from][v] == 1 || g[v][from] == 1) && label[v] == 0)
-      if (reach(g, v, to))
+  for (node=0; node<e; node++)
+    if (g[from][node] == 1 && label[node] == 0)
+      if (reach(g, node, to))
         return 1;
   return 0;
 }
 
 int match_path(int g[][e], int from, int to) {
-  int v;
+  int node;
 
-  for (v=0; v<e; v++)
-    label[v] = 0;
+  for (node=0; node<e; node++)
+    label[node] = 0;
   return reach(g, from, to);
 }
 
@@ -42,6 +42,7 @@ int build_graph() {
   for (i=0; i<l; i++) {
     scanf("%d %d\n", &x, &y);
     graph[x-1][y-1] = 1;
+    graph[y-1][x-1] = 1;
   }
 
   for (i=0; i<e; i++) {
