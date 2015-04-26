@@ -1,2 +1,2 @@
 all:
-	gcc main.c -o a.out
+	gcc energy-transmission/main.c -o a.out
