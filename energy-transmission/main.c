@@ -4,25 +4,15 @@
 
 int e, l, label[101], test_num = 1;
 
-int reach(int g[][e], int from, int to) {
+int depth_search(int g[][e], int from, int to) {
   int node;
 
-  if (from == to)
-    return true;
   label[from] = 1;
   for (node=0; node<e; node++)
     if (g[from][node] == 1 && label[node] == 0)
-      if (reach(g, node, to))
-        return 1;
-  return 0;
-}
+      depth_search(g, node, to);
 
-int match_path(int g[][e], int from, int to) {
-  int node;
-
-  for (node=0; node<e; node++)
-    label[node] = 0;
-  return reach(g, from, to);
+  return label[to] == 1;
 }
 
 int build_graph() {
@@ -38,6 +28,7 @@ int build_graph() {
   int graph[e][e];
 
   memset(graph, 0, sizeof(graph[0][0]) * e * e);
+  memset(label, 0, sizeof(label[0]) * e);
   // reading the input
   for (i=0; i<l; i++) {
     scanf("%d %d\n", &x, &y);
@@ -47,7 +38,7 @@ int build_graph() {
 
   for (i=0; i<e; i++) {
     for (j=0; j<e; j++) {
-      if (!match_path(graph, i, j))
+      if (!depth_search(graph, i, j))
         result = false;
     }
   }
