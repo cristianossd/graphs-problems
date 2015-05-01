@@ -30,6 +30,7 @@ int build_graph() {
 
   memset(graph, 0, sizeof(graph[0][0]) * e * e);
   memset(label, 0, sizeof(label[0]) * e);
+  visited = 0;
   // reading the input
   for (i=0; i<l; i++) {
     scanf("%d %d", &x, &y);
