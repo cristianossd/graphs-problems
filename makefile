@@ -1,2 +1,2 @@
 all:
-	gcc go_and_come/main.c -o a.out
+	gcc -g go_and_come/main.c -o a.out

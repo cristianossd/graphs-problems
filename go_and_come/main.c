@@ -2,47 +2,39 @@
 #include <stdbool.h>
 #include <string.h>
 
-int e, l, label[101];
+int n, m, label[2000];
 
-int reach(int g[][e], int from, int to) {
+void depth_search(int g[][n], int from) {
   int node;
 
-  if (from == to)
-    return true;
+  if (label[from])
+    return;
   label[from] = 1;
-  for (node=0; node<e; node++)
+  for (node=0; node<n; node++)
     if (g[from][node] == 1 && label[node] == 0)
-      if (reach(g, node, to))
-        return 1;
-  return 0;
-}
-
-int match_path(int g[][e], int from, int to) {
-  int node;
-
-  for (node=0; node<e; node++)
-    label[node] = 0;
-  return reach(g, from, to);
+      depth_search(g, node);
 }
 
 int build_graph() {
   int i, j, v, w, p;
-  bool result;
+  bool response;
 
-  scanf("%d", &e);
-  if (e != 0)
-    scanf(" %d", &l);
-  if (((e == 0)||(l == 0)) ||
-      ((e < 2)||(e > 2000)) ||
-      ((l < 2)||(l > e*(e-1)/2)))
+  scanf("%d", &n);
+  if (n != 0)
+    scanf(" %d", &m);
+  if (((n == 0)||(m == 0)) ||
+      ((n < 2)||(n > 2000)) ||
+      ((m < 2)||(m > n*(n-1)/2)))
     return 0;
 
-  int graph[e][e];
+  int graph[n][n];
 
-  memset(graph, 0, sizeof(graph[0][0]) * e * e);
+  memset(graph, 0, sizeof(graph));
+  memset(label, 0, sizeof(label[0]) * n);
+  response = true;
   // reading the input
-  for (i=0; i<l; i++) {
-    scanf("%d %d %d\n", &v, &w, &p);
+  for (i=0; i<m; i++) {
+    scanf("%d %d %d", &v, &w, &p);
     if (p == 1)
       graph[v-1][w-1] = 1;
     else {
@@ -51,14 +43,35 @@ int build_graph() {
     }
   }
 
-  for (i=0; i<e; i++) {
-    for (j=0; j<e; j++) {
-      if (!match_path(graph, i, j))
-        result = false;
+  depth_search(graph, 0);
+  for (i=0; i<n; i++)
+    if (label[i] == 0)
+      response = false;
+
+  if (response) {
+    for (i=0; i<n; i++) {
+      label[i] = 0;
+      for (j=i+1; j<n; j++) {
+        if (graph[i][j] == 1 && graph[j][i] == 0) {
+          graph[j][i] = 1;
+          graph[i][j] = 0;
+        }
+        else
+          if (graph[j][i] == 1 && graph[i][j] == 0) {
+            graph[i][j] = 1;
+            graph[j][i] = 0;
+          }
+      }
     }
+
+    depth_search(graph, 0);
   }
 
-  if (result)
+  for (i=0; i<n; i++)
+    if (label[i] == 0)
+      response = false;
+
+  if (response)
     printf("1\n");
   else
     printf("0\n");
