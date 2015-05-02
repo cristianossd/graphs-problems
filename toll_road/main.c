@@ -4,11 +4,11 @@
 
 int c, e, l, p, label[50], test_num = 1;
 
-int depth_search(int g[][c], int tax, int city) {
+void depth_search(int g[][c], int tax, int city) {
   int node;
 
   if (tax > p)
-    return true;
+    return;
 
   label[city] = 1;
   for (node=0; node<c; node++)
@@ -39,19 +39,19 @@ int build_graph() {
   }
 
   control = 0;
-  if (depth_search(graph, 0, l-1)) {
-    printf("Teste %d\n", test_num);
-    for (i=0; i<c; i++) {
-      if (label[i] == 1 && i != l-1) {
-        if (control == 0)
-          printf("%d", i+1);
-        else
-          printf(" %d", i+1);
-        control++;
-      }
+  depth_search(graph, 0, l-1);
+
+  printf("Teste %d\n", test_num);
+  for (i=0; i<c; i++) {
+    if (label[i] == 1 && i != l-1) {
+      if (control == 0)
+        printf("%d", i+1);
+      else
+        printf(" %d", i+1);
+      control++;
     }
-    printf("\n\n");
   }
+  printf("\n\n");
 
   test_num++;
   build_graph();
