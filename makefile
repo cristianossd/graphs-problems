@@ -6,3 +6,4 @@ all:
 	gcc -g monitoring_amazon/main.cpp -o ma.out
 	gcc -g lost_elf/main.c -o le.out
 	gcc -g optical_network/main.c -o on.out
+	gcc -g liana_system/main.c -o ls.out
