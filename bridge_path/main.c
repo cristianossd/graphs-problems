@@ -6,43 +6,48 @@
 
 int n, m;
 
-int min_distance(int dist[], bool control[]) {
-  int v, min = INFINITY, min_index;
+void dijkstra(int graph[][n], int root, int parent[], int dist[]) {
+  int i, v0, w, head[n], cost, min_dist;
 
-  for (v=0; v<n; v++) {
-    if (control[v] == false && dist[v] <= min) {
-      min = dist[v];
-      min_index = v;
+  for (w=0; w<n; w++) {
+    parent[w] = -1;
+    dist[w] = INFINITY;
+  }
+  parent[root] = root;
+  dist[root] = 0;
+  for (i=0; i<n; i++) {
+    if (graph[root][i] > 0) {
+      w = i;
+      cost = graph[root][i];
+      dist[w] = cost;
+      head[w] = root;
     }
   }
 
-  return min_index;
-}
-
-void dijkstra(int graph[][n], int root) {
-  int i, v, dist[n];
-  bool control[n];
-
-  for (i=0; i<n; i++) {
-    dist[i] = INFINITY;
-    control[i] = false;
-  }
-
-  dist[root] = 0;
-
-  for (i=0; i<n; i++) {
-    int u = min_distance(dist, control);
-
-    control[u] = true;
-    for (v=0; v<n; v++) {
-      if (!control[v] && graph[u][v] && dist[u] != INFINITY
-          && dist[u] + graph[u][v] < dist[v])
-        dist[v] = dist[u] + graph[u][v];
+  while (1) {
+    min_dist = INFINITY;
+    for (w=0; w < n; w++)
+      if (parent[w] == -1 && min_dist > dist[w]) {
+        min_dist = dist[w];
+        v0 = w;
+      }
+    if (min_dist == INFINITY)
+      break;
+    parent[v0] = head[v0];
+    for (i=0; i<n; i++) {
+      if (graph[v0][i] > 0) {
+        w = i;
+        cost = graph[v0][i];
+        if (parent[w] == -1 && dist[w] > dist[v0] + cost) {
+          dist[w] = dist[v0] + cost;
+          head[w] = v0;
+        }
+      }
     }
   }
 
   for (i=0; i<n; i++)
-    printf("%d\n", dist[i]);
+    printf("parent: %d | dist: %d\n", parent[i], dist[i]);
 }
 
 int main() {
@@ -50,15 +55,16 @@ int main() {
 
   scanf("%d %d", &n, &m);
 
-  int graph[n][n];
+  int graph[n][n],
+      parent[n],
+      dist[n];
   memset(graph, 0, sizeof(graph[0][0]) * n * n);
 
   for (i=0; i<m; i++) {
     scanf("%d %d %d", &s, &t, &b);
     graph[s-1][t-1] = b;
-    graph[t-1][s-1] = b;
   }
 
-  dijkstra(graph, 0);
+  dijkstra(graph, 0, parent, dist);
   printf("\n");
 }
