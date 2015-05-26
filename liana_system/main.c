@@ -7,29 +7,31 @@
 int n, m, min_cost, test = 1;
 
 void mst_prim(int graph[][n], int parent[]) {
-  int i, v, w, v0, w0, cost;
+  int boss[n], i, v, v0, w0, x, y, cost;
 
-  for (w=0; w<n; w++)
-    parent[w] = -1;
-  parent[0] = 0;
+  for (v=0; v<n; v++)
+    boss[v] = v;
 
   while(1) {
     cost = INFINITY;
     for (v=0; v<n; v++)
-      if (parent[v] != -1)
-        for (i=0; i<n; i++)
-          if (graph[i][v] > 0 || graph[v][i] > 0)
-            if (parent[i] == -1 && cost > graph[i][v]) {
-              cost = graph[i][v];
-              v0 = v;
-              w0 = i;
-            }
+      for (i=0; i<n; i++)
+        if (graph[v][i] > 0 || graph[i][v] > 0)
+          if (boss[v] != boss[i] && cost > graph[i][v]) {
+            cost = graph[i][v];
+            v0 = v;
+            w0 = i;
+          }
     if (cost == INFINITY)
       break;
-
     min_cost = min_cost + graph[v0][w0];
-    parent[w0] = v0;
+    x = boss[v0];
+    y = boss[w0];
+    for (v=0; v<n; v++)
+      if (boss[v] == y)
+        boss[v] = x;
   }
+
   printf("%d\n", min_cost);
 }
 
